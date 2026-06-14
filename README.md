@@ -16,7 +16,7 @@ Le système est conçu autour de trois piliers techniques majeurs :
 
 ## Aperçu du Dashboard (Supervision)
 
-*Placez ici une capture d'écran de votre interface Streamlit en action pour illustrer le rendu visuel.*
+![alt text](image.png)
 
 ---
 
