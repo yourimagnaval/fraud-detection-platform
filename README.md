@@ -41,7 +41,7 @@ fraud-detection-platform/
 │   │   ├── features.py        # Définition des entités et des Feature Views
 │   │   └── read_features.py   # Client de lecture basse latence / Simulation de scoring ML
 │   └── visualisation/         # Interface utilisateur et supervision
-│       └── app.py             # Dashboard de monitoring des fraudes en temps réel (Streamlit)
+│   │   └── app.py             # Dashboard de monitoring des fraudes en temps réel (Streamlit)
 ├── data/                      # Registres Feast locaux et stockage offline (Ignoré par Git)
 ├── requirements.txt           # Dépendances Python du projet
 └── README.md                  # Documentation de la plateforme
