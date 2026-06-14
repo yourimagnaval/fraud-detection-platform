@@ -1,0 +1,6 @@
+project: fraud_detection_platform
+registry: ../../data/feast_registry/registry.db
+provider: local
+online_store:
+  type: redis
+  connection_string: "localhost:6379,db=0"
