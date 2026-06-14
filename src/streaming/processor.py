@@ -51,4 +51,4 @@ def main():
     env.execute("Fraud-Detection-Streaming-Job")
 
 if __name__ == "__main__":
-    main()
+    main() 
