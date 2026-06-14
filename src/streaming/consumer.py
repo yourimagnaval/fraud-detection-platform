@@ -7,17 +7,17 @@ from datetime import datetime
 
 print("Connexion a la base de donnees MongoDB (Port 27018)")
 try:
-    # Changement du port ici : 27018 au lieu de 27017
+    # Changement du port : 27018 
     mongo_client = MongoClient('mongodb://127.0.0.1:27018/', serverSelectionTimeoutMS=5000)
     db = mongo_client['fraud_platform']
     alerts_collection = db['alerts']
     mongo_client.server_info()
-    print("Connecte a MongoDB avec succes sur le port 27018.")
+    print("Connection a MongoDB avec succes sur le port 27018.")
 except Exception as e:
     print(f"Impossible de se connecter a MongoDB : {e}")
     exit(1)
 
-print("Connexion au flux Kafka user-clickstream...")
+print("Connexion au flux Kafka user-clickstream")
 try:
     CONSUMER = KafkaConsumer(
         'user-clickstream',
@@ -31,7 +31,7 @@ except Exception as e:
     exit(1)
 
 user_clicks = defaultdict(list)
-print("?? Moteur de detection actif (Sauvegarde MongoDB active)...")
+print("Moteur de detection actif (sauvegarde MongoDB active)")
 print("------------------------------------------------------------")
 
 try:

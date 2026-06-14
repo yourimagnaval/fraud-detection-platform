@@ -4,12 +4,12 @@ import os
 
 print("Initialisation du client Feast Feature Store")
 
-# 1. Connexion au registre de Feast (il lit le fichier feature_store.yaml automatiquement)
+# Connexion au registre de Feast (lecture du fichier feature_store.yaml de manière automatique)
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 store = FeatureStore(repo_path=CURRENT_DIR)
 
-# 2. On définit l'utilisateur dont on veut analyser le profil en temps réel
-# (Mettons user_6778 ou un autre apparu dans ton terminal Flink)
+# Définition de l'utilisateur dont avec analyse du profil en temps réel
+# (Test avec user_6778)
 target_user = "user_6778"
 
 entity_rows = [
@@ -18,7 +18,7 @@ entity_rows = [
     }
 ]
 
-# 3. Les variables (features) qu'on souhaite récupérer depuis Redis
+# Variables  récupérées depuis Redis
 features_to_fetch = [
     "user_fraud_features:click_count",
 ]
@@ -26,13 +26,13 @@ features_to_fetch = [
 print(f"Interrogation de Redis pour l'utilisateur : {target_user}...")
 
 try:
-    # Récupération des données en ligne (Online Store) en moins de 10ms
+    # Récupération des données en ligne 
     response = store.get_online_features(
         features=features_to_fetch,
         entity_rows=entity_rows
     ).to_dict()
 
-    # 4. Affichage du résultat propre
+    # Affichage du résultat 
     user_id_res = response["user_id"][0]
     click_count_res = response["click_count"][0]
 

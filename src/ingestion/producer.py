@@ -18,11 +18,11 @@ except Exception as e:
 
 topic_name = 'user-clickstream'
 
-# Liste d'utilisateurs "normaux"
+# Liste d'utilisateurs normaux
 normal_users = [f"user_{i}" for i in range(1000, 1100)]
 
 while True:
-    # 1. SIMULATION TRAFIC NORMAL (1 à 3 clics max par seconde)
+    # SIMULATION TRAFIC NORMAL
     for _ in range(random.randint(5, 15)):
         user = random.choice(normal_users)
         data = {
@@ -33,10 +33,10 @@ while True:
         }
         producer.send(topic_name, value=data)
     
-    # 2. SIMULATION D'ATTAQUES DE BOTS DYNAMIQUES (Aléatoire entre 11 et 45 clics d'un coup)
-    if random.random() < 0.4:  # 40% de chance d'avoir une vague de fraude à chaque seconde
-        bot_user = f"user_{random.randint(5000, 9999)}"
-        nombre_de_clics_du_bot = random.randint(11, 45)  # <-- C'est ici que le dynamisme se crée !
+    # SIMULATION D'ATTAQUES DE BOTS DYNAMIQUES (évenment aléatoire)
+    if random.random() < 0.3:  # 30% de chance d'avoir une vague de fraude à chaque seconde
+        bot_user = f"user_{random.randint(5000, 9999)}" 
+        nombre_de_clics_du_bot = random.randint(11, 45) 
         
         for _ in range(nombre_de_clics_du_bot):
             data = {

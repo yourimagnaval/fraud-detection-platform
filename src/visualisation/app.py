@@ -9,7 +9,7 @@ import time
 st.set_page_config(page_title="Fraud Detection Dashboard", layout="wide", page_icon="🚨")
 st.title("Plateforme de Détection de Fraude en Temps Réel")
 
-# 1. Connexions (Redis + Feast)
+# Connexions (Redis/Feast)
 r = Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 @st.cache_resource
@@ -20,20 +20,19 @@ def get_feast_store():
 
 try:
     store = get_feast_store()
-    st.success("🔌 Connecté au Flux d'Alertes et au Feature Store Feast !")
+    st.success("Connection au Flux d'alertes et au feature store feast")
 except Exception as e:
     st.error(f"Erreur de connexion : {e}")
     st.stop()
 
-# 2. BARRE LATÉRALE : Simulation de l'API de scoring ML
+# Simulation de l'API de scoring ML
 st.sidebar.header("Microservice de Scoring ML")
 user_to_check = st.sidebar.text_input("ID Utilisateur à contrôler", "").strip()
 
 if st.sidebar.button("Simuler une transaction"):
     if user_to_check:
         try:
-            # 1. TEST DIRECT REDIS : On regarde si l'utilisateur existe dans le flux d'alertes
-            # C'est la méthode la plus fiable en temps réel
+            # TEST DIRECT REDIS : analyse d'utilisateur si il existe dans le flux d'alertes
             redis_key = f"fraud_detection_platform:user_fraud_features:{user_to_check}"
             clicks = r.hget(redis_key, "click_count")
             
@@ -46,13 +45,13 @@ if st.sidebar.button("Simuler une transaction"):
                 else:
                     st.sidebar.success("TRANSACTION VALIDÉE")
             else:
-                # 2. Si pas dans Redis, on tente une requête Feast standard
+                # Si pas dans Redis, requête feast standard
                 feature_vector = store.get_online_features(
                     features=["user_fraud_features:click_count"],
                     entity_rows=[{"user_id": user_to_check}]
                 ).to_dict()
                 
-                # Feast stocke parfois les résultats avec le nom complet de la feature
+                # Feast stocke les résultats avec le nom complet de la feature
                 clicks_feast = feature_vector.get("click_count", [None])[0] or feature_vector.get("user_fraud_features:click_count", [None])[0]
                 
                 if clicks_feast is not None:
@@ -68,7 +67,7 @@ if st.sidebar.button("Simuler une transaction"):
     else:
         st.sidebar.warning("Veuillez entrer un ID.")
 
-# 3. AFFICHAGE DES ALERTES GLOBALES (Ton code fonctionnel)
+# AFFICHAGE DES ALERTES GLOBALES 
 raw_alerts = r.lrange("live_alerts", 0, -1)
 
 if not raw_alerts:

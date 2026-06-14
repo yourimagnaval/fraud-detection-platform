@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  # --- INGESTION : ZOOKEEPER & KAFKA ---
+  # --- INGESTION : ZOOKEEPER/KAFKA ---
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: fraud_zookeeper
