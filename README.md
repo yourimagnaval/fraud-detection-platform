@@ -1,6 +1,6 @@
 # Real-Time Fraud & Bot Detection Platform
 
-Une plateforme industrielle et scalable de détection de comportements frauduleux (activités de bots, fermes à clics) en temps réel. Ce projet combine le traitement de flux d'événements à haute vélocité, une infrastructure MLOps moderne pour la gestion des caractéristiques (features) à basse latence, et des pratiques DevOps rigoureuses.
+Une plateforme industrielle et scalable de détection de comportements frauduleux (activités de bots, fermes à clics) en temps réel. Ce projet combine le traitement de flux d'événements à haute vélocité, une infrastructure MLOps moderne pour la gestion des caractéristiques (*features*) à basse latence, et des pratiques DevOps rigoureuses.
 
 ---
 
@@ -10,7 +10,13 @@ Le système est conçu autour de trois piliers techniques majeurs :
 
 * **Ingestion & In-Flight Processing (Temps Réel) :** Simulation d'un trafic utilisateur à haute vélocité (mélange de trafic légitime et d'attaques de bots) distribué via **Apache Kafka**. Traitement événement par événement (*Stateful Stream Processing*) via **Apache Flink** à l'aide de fenêtres glissantes (*Hopping Windows*) pour détecter les anomalies de comportement en moins d'une seconde.
 * **Infrastructure MLOps (Feature Store) :** Centralisation et service des caractéristiques à l'aide de **Feast**. Le calcul à chaud issu de Flink alimente directement le Feature Store en ligne hébergé sur **Redis** pour permettre un scoring à l'échelle de la milliseconde.
-* **CI/CD & Automatisation :** Automatisation complète de l'intégration (tests unitaires et validation structurelle) via **GitHub Actions** (fichiers d'init, gestion des paths relatifs). Gestion et orchestration de l'infrastructure locale via **Docker Compose**.
+* **CI/CD & DevOps :** Automatisation complète de l'intégration continue via **GitHub Actions** (validation structurelle, tests unitaires). Gestion, isolation et orchestration de l'infrastructure locale via **Docker Compose**.
+
+---
+
+## Aperçu du Dashboard (Supervision)
+
+*Placez ici une capture d'écran de votre interface Streamlit en action pour illustrer le rendu visuel.*
 
 ---
 

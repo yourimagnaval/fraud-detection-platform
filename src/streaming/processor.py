@@ -49,6 +49,3 @@ def main():
 
     # Lancement de l'exécution continue
     env.execute("Fraud-Detection-Streaming-Job")
-
-if __name__ == "__main__":
-    main() 
