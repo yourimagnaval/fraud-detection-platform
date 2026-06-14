@@ -58,7 +58,7 @@ fraud_detection_query = """
     FROM kafka_src
     GROUP BY 
         user_id, 
-        TUMBLE(ts, INTERVAL '10' SECOND)
+        HOP(ts, INTERVAL '1' SECOND, INTERVAL '10' SECOND)
     HAVING COUNT(action) > 10
 """
 
@@ -78,13 +78,11 @@ with table_result.collect() as results:
         redis_key = f"fraud_detection_platform:user_fraud_features:{user_id}"
         
         try:
-            # Mise à jour Feast (permettant au modèles ML d'interroger Redis)
             r.hset(redis_key, mapping={"click_count": click_count})
             
-            # Envoie du message d'alerte dans la liste globale lue par Dashboard Streamlit
             alert_payload = f"{timestamp}|{user_id}|{click_count}"
             r.lpush("live_alerts", alert_payload)
-            r.ltrim("live_alerts", 0, 10000)  # Affichage de 10000 alertes les plus fraîches
+            r.ltrim("live_alerts", 0, 10000)
             
             print(f"ALERTE ENVOYÉE -> {user_id} : {click_count} clics")
             
