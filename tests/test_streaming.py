@@ -41,7 +41,7 @@ def test_flink_fraud_detection():
     # Collecte des résultats pour la vérification
     results = [data for data in result_stream.execute_and_collect()]
 
-    # 6. Les Assertions : Vérification que flink fonctionne
+    # Les Assertions : Vérification que flink fonctionne
     # La transaction T1 (120€) doit rester non-frauduleuse (0)
     assert results[0]["is_fraud"] == 0
     # La transaction T2 (7500€) doit avoir été marquée comme fraude (1)

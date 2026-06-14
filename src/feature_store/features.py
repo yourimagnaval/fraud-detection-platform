@@ -12,7 +12,7 @@ user_entity = Entity(
 
 # Source de données historique (Offline Store)
 dummy_source = FileSource(
-    path="D:/fraud-detection-platform/data/offline_lakehouse/dummy.parquet",
+    path="../../data/offline_lakehouse/dummy.parquet",
     timestamp_field="event_timestamp",
 )
 
