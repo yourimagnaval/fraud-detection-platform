@@ -1,48 +1,61 @@
+# -*- coding: utf-8 -*-
 import pytest
 from pyflink.common import Types
 from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import StreamTableEnvironment
 
-# Une fonction simplifiée imitans la logique de fraude Flink
-def detect_fraud_logic(transaction: dict) -> dict:
-    # Exemple de règle : si montant supérieur à 5000€, signaler alerte
-    if transaction["amount"] > 5000:
-        transaction["is_fraud"] = 1
-    else:
-        transaction["is_fraud"] = 0
-    return transaction
-
-def test_flink_fraud_detection():
-    # Initialisation de l'environnement flink local pour le test
+def test_flink_clickstream_fraud_detection():
+    # Initialisation de l'environnement stream et table combiné pour le test
     env = StreamExecutionEnvironment.get_execution_environment()
     env.set_parallelism(1)
+    t_env = StreamTableEnvironment.create(env)
 
-    # Création d'un jeu de données de test (une transaction normale, une suspecte)
-    mock_transactions = [
-        {"transaction_id": "T1", "amount": 120.0, "is_fraud": 0},
-        {"transaction_id": "T2", "amount": 7500.0, "is_fraud": 0}
+    # Création d'un jeu de données simulant l'activité dans la même fenêtre temporelle
+    # user_A fait 11 clics (fraude), user_B fait 1 clic (normal)
+    mock_clicks = [
+        ("user_A", "click", "2026-06-14 10:00:01"),
+        ("user_A", "click", "2026-06-14 10:00:02"),
+        ("user_A", "click", "2026-06-14 10:00:02"),
+        ("user_A", "click", "2026-06-14 10:00:03"),
+        ("user_A", "click", "2026-06-14 10:00:04"),
+        ("user_A", "click", "2026-06-14 10:00:05"),
+        ("user_A", "click", "2026-06-14 10:00:05"),
+        ("user_A", "click", "2026-06-14 10:00:06"),
+        ("user_A", "click", "2026-06-14 10:00:07"),
+        ("user_A", "click", "2026-06-14 10:00:07"),
+        ("user_A", "click", "2026-06-14 10:00:08"),
+        ("user_B", "click", "2026-06-14 10:00:01"),
     ]
 
-    # Injection des données dans un flux flink nomade
+    # Injection dans le flux DataStream de Flink
     ds = env.from_collection(
-        collection=mock_transactions,
+        collection=mock_clicks,
         type_info=Types.ROW_NAMED(
-            ["transaction_id", "amount", "is_fraud"],
-            [Types.STRING(), Types.DOUBLE(), Types.INT()]
+            ["user_id", "action", "ts_string"],
+            [Types.STRING(), Types.STRING(), Types.STRING()]
         )
     )
 
-    # Application la logique de détection sur le flux Flink
-    result_stream = ds.map(lambda row: detect_fraud_logic({
-        "transaction_id": row.transaction_id,
-        "amount": row.amount,
-        "is_fraud": row.is_fraud
-    }))
+    # Conversion en vue Table pour appliquer la requête de détection
+    table = t_env.from_data_stream(ds)
+    t_env.create_temporary_view("memory_src", table)
 
-    # Collecte des résultats pour la vérification
-    results = [data for data in result_stream.execute_and_collect()]
+    # Requête de détection basée sur la logique de flink_job.py
+    query = """
+        SELECT 
+            user_id,
+            COUNT(action) as click_count
+        FROM memory_src
+        GROUP BY 
+            user_id, 
+            TUMBLE(TO_TIMESTAMP(ts_string), INTERVAL '10' SECOND)
+        HAVING COUNT(action) > 10
+    """
+    
+    result_table = t_env.sql_query(query)
+    results = [row for row in result_table.execute().collect()]
 
-    # Les Assertions : Vérification que flink fonctionne
-    # La transaction T1 (120€) doit rester non-frauduleuse (0)
-    assert results[0]["is_fraud"] == 0
-    # La transaction T2 (7500€) doit avoir été marquée comme fraude (1)
-    assert results[1]["is_fraud"] == 1
+    # Assertions : On vérifie que seul user_A est détecté et possède plus de 10 clics
+    assert len(results) == 1
+    assert results[0][0] == "user_A"
+    assert results[0][1] == 11
