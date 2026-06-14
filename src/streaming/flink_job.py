@@ -62,7 +62,7 @@ fraud_detection_query = """
     HAVING COUNT(action) > 10
 """
 
-print("🚨 Moteur de règles Flink activé. Surveillance du Feature Store en cours...")
+print("Moteur de règles Flink activé. Surveillance du Feature Store en cours...")
 
 # 5. Exécution et interception du flux par Python
 table_result = t_env.execute_sql(fraud_detection_query)
@@ -86,7 +86,7 @@ with table_result.collect() as results:
             r.lpush("live_alerts", alert_payload)
             r.ltrim("live_alerts", 0, 10000)  # On conserve uniquement les 10000 alertes les plus fraîches
             
-            print(f"🔥 ALERTE ENVOYÉE -> {user_id} : {click_count} clics")
+            print(f"ALERTE ENVOYÉE -> {user_id} : {click_count} clics")
             
         except Exception as redis_err:
-            print(f"⚠️ Erreur d'écriture Redis : {redis_err}")
+            print(f"Erreur d'écriture Redis : {redis_err}")

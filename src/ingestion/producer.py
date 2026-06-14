@@ -4,7 +4,7 @@ import random
 import time
 from kafka import KafkaProducer
 
-print("🚀 Démarrage du générateur de clics (Flux Réaliste & Dynamique)...")
+print("Démarrage du générateur de clics")
 
 # Connexion à Kafka
 try:
@@ -13,7 +13,7 @@ try:
         value_serializer=lambda v: json.dumps(v).encode('utf-8')
     )
 except Exception as e:
-    print(f"❌ Impossible de se connecter à Kafka : {e}")
+    print(f"Impossible de se connecter à Kafka : {e}")
     exit(1)
 
 topic_name = 'user-clickstream'
@@ -47,7 +47,7 @@ while True:
             }
             producer.send(topic_name, value=data)
             
-        print(f"🚨 [Générateur] Attaque simulée pour {bot_user} : {nombre_de_clics_du_bot} clics envoyés.")
+        print(f"Attaque simulée pour {bot_user} : {nombre_de_clics_du_bot} clics envoyés.")
 
     producer.flush()
     time.sleep(1)  # Pause d'une seconde avant la prochaine vague

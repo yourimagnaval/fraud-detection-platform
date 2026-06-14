@@ -7,7 +7,7 @@ import os
 import time
 
 st.set_page_config(page_title="Fraud Detection Dashboard", layout="wide", page_icon="🚨")
-st.title("🚨 Plateforme de Détection de Fraude en Temps Réel")
+st.title("Plateforme de Détection de Fraude en Temps Réel")
 
 # 1. Connexions (Redis + Feast)
 r = Redis(host='localhost', port=6379, db=0, decode_responses=True)
@@ -26,7 +26,7 @@ except Exception as e:
     st.stop()
 
 # 2. BARRE LATÉRALE : Simulation de l'API de scoring ML
-st.sidebar.header("🤖 Microservice de Scoring ML")
+st.sidebar.header("Microservice de Scoring ML")
 user_to_check = st.sidebar.text_input("ID Utilisateur à contrôler", "").strip()
 
 if st.sidebar.button("Simuler une transaction"):
@@ -42,9 +42,9 @@ if st.sidebar.button("Simuler une transaction"):
             if clicks is not None:
                 st.sidebar.metric("Clics (10s)", f"{clicks} / 10 max")
                 if int(clicks) > 10:
-                    st.sidebar.error("❌ TRANSACTION REJETÉE (Bot détecté)")
+                    st.sidebar.error("TRANSACTION REJETÉE (Bot détecté)")
                 else:
-                    st.sidebar.success("✅ TRANSACTION VALIDÉE")
+                    st.sidebar.success("TRANSACTION VALIDÉE")
             else:
                 # 2. Si pas dans Redis, on tente une requête Feast standard
                 feature_vector = store.get_online_features(
@@ -58,11 +58,11 @@ if st.sidebar.button("Simuler une transaction"):
                 if clicks_feast is not None:
                     st.sidebar.metric("Clics (Feast)", f"{clicks_feast} / 10 max")
                     if int(clicks_feast) > 10:
-                        st.sidebar.error("❌ TRANSACTION REJETÉE (Bot détecté)")
+                        st.sidebar.error("TRANSACTION REJETÉE (Bot détecté)")
                     else:
-                        st.sidebar.success("✅ TRANSACTION VALIDÉE")
+                        st.sidebar.success("TRANSACTION VALIDÉE")
                 else:
-                    st.sidebar.info("✅ TRANSACTION VALIDÉE (Aucune activité récente)")
+                    st.sidebar.info("TRANSACTION VALIDÉE (Aucune activité récente)")
         except Exception as e:
             st.sidebar.error(f"Erreur de vérification : {e}")
     else:
@@ -72,7 +72,7 @@ if st.sidebar.button("Simuler une transaction"):
 raw_alerts = r.lrange("live_alerts", 0, -1)
 
 if not raw_alerts:
-    st.info("⌛ En attente de données suspectes de la part d'Apache Flink...")
+    st.info("En attente de données suspectes de la part d'Apache Flink...")
 else:
     alerts_list = []
     for alert in raw_alerts:
@@ -91,7 +91,7 @@ else:
     st.markdown("---")
     
     # Tableau
-    st.write("### 📋 Liste détaillée des alertes (Flux Flink)")
+    st.write("###Liste détaillée des alertes (Flux Flink)")
     st.dataframe(df.rename(columns={"user_id": "ID Utilisateur", "click_count": "Nombre de Clics"}), use_container_width=True)
 
 # Boucle de rafraîchissement 2s
