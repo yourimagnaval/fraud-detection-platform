@@ -8,7 +8,6 @@ on:
     branches:
       - main
 
-# Activation option pour nettoyer les messages d'avertissement
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -41,3 +40,7 @@ jobs:
         mkdir -p data/feast_registry
         cd src/feature_store/
         feast plan
+
+    - name: Run PyTest (Flink Unit Tests)
+      run: |
+        pytest tests/
