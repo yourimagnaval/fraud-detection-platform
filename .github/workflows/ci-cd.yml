@@ -1,45 +1,39 @@
 name: Fraud Platform CI/CD
 
-# Le pipeline se déclenche à chaque push ou pull-request sur la branche main
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Récupérer le code du dépôt
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. Installer Python
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    # 3. Installer les dépendances nécessaires pour les tests
+    # Ici, on installe explicitement feast avec l'extension redis, flake8, pytest et apache-flink
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 feast
+        pip install flake8 pytest apache-flink
+        pip install "feast[redis]"
 
-    # 4. ÉTAPE LINTING : Vérifier les erreurs de syntaxe Python grosses/bloquantes
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings.
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    # 5. ÉTAPE FEAST (MLOps) : Vérifier que le Feature Store est valide (syntaxe des features)
     - name: Verify Feast Repository
       run: |
-        # On se déplace là où est ton dossier de feature store (remplace par ton dossier si différent)
-        # Si ton feature_store.yaml est directement dans src/feature_store/
         cd src/feature_store/
         feast plan
