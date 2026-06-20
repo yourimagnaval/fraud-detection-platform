@@ -55,8 +55,5 @@ services:
     networks:
       - fraud-network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
-    driver: local
+      # Remplacement du volume nommé par un dossier local pour garantir la portabilité du portfolio
+      - ./.postgres_data:/var/lib/postgresql/data

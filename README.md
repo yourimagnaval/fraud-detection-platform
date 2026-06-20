@@ -16,7 +16,8 @@ Le système est conçu autour de trois piliers techniques majeurs :
 
 ## Aperçu du Dashboard (Supervision)
 
-![alt text](image.png)
+<img width="1868" height="906" alt="image" src="https://github.com/user-attachments/assets/eeabfd6e-8d12-4bac-ae53-fc40d535e353" />
+
 
 ---
 
@@ -45,3 +46,42 @@ fraud-detection-platform/
 ├── data/                      # Registres Feast locaux et stockage offline (Ignoré par Git)
 ├── requirements.txt           # Dépendances Python du projet
 └── README.md                  # Documentation de la plateforme
+```
+
+
+
+---
+
+## Démarrage Rapide
+
+* **Prérequis**
+Assurez-vous d'avoir installé Docker, Docker Compose et Python 3.11 sur votre machine de développement.
+
+* **Lancement de l'infrastructure**
+Déployez l'ensemble des conteneurs requis pour la plateforme (Kafka, Redis, MongoDB, Zookeeper) :
+
+```bash
+docker-compose -f config/docker-compose.yaml up -d
+```
+* **Initialisation du Feature Store**
+Configurez et appliquez les définitions Feast pour préparer le registre local et la base en ligne :
+
+```bash
+cd src/feature_store
+feast apply
+```
+
+* **Exécution des pipelines de données**
+Lancez le simulateur de trafic puis le traitement de flux distribué dans 3 terminaux:
+```bash
+python src/ingestion/producer.py
+python src/streaming/flink_job.py
+python src/streaming/consumer.py
+```
+
+* **Lancement du Dashboard de supervision**
+  Démarrez l'interface Streamlit pour visualiser les métriques de fraude en temps réel :
+
+```bash
+ python -m streamlit run src/visualisation/app.py
+```

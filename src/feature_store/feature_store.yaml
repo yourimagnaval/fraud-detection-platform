@@ -2,7 +2,14 @@ project: fraud_detection_platform
 registry: ../../data/feast_registry/registry.db
 provider: local
 offline_store:
-  type: file
+  type: postgres
+  host: localhost
+  port: 5432
+  database: fraud_lakehouse
+  user: data_engineer
+  password: password123
+  db_schema: public
+  sslmode: disable
 online_store:
   type: redis
   connection_string: "localhost:6379,db=0"
