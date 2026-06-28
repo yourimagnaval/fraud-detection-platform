@@ -1,9 +1,33 @@
+# Environnements virtuels
 venv/
 .venv/
+env/
+ENV/
+
+# Caches Python et fichiers compiles
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .pytest_cache/
-.feast/
+
+# Donnees et infrastructure locales (Portabilite du portfolio)
+config/.postgres_data/
 data/
+*.parquet
+*.db
+
+# Fichiers temporaires et logs Feast
+.feast/
+
+# Archives et fichiers binaires lourds
 *.jar
+*.tar.gz
+*.zip
+
+# Systemes d'exploitation et IDE
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

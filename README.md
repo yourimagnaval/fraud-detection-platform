@@ -75,7 +75,11 @@ python cataloh_manager.py
 ### 3. Orchestrer et Synchroniser le Feature Store
 
 ```bash
+<<<<<<< Updated upstream
 python cataloh_manager.py
+=======
+python feature_store/read_features.py
+>>>>>>> Stashed changes
 ```
 
 
@@ -83,6 +87,21 @@ python cataloh_manager.py
 
 ```bash
 python processor.py
+<<<<<<< Updated upstream
+```
+
+### 5. Lancer le Producteur de Flux Kafka
+
+```bash
+python producer.py
+```
+
+
+### 6. Lancer le Dashboard Streamlit
+```bash
+streamlit run app.py
+=======
+>>>>>>> Stashed changes
 ```
 
 ### 5. Lancer le Producteur de Flux Kafka
